@@ -21,8 +21,7 @@ import {
 import { fetchPizzas, selectPizzaData } from '../redux/slices/pizzaSlice';
 
 const Home = () => {
-  const { categoryId, sort, currentPage, searchValue } =
-    useSelector(selectorFilter);
+  const { categoryId, sort, currentPage, searchValue } = useSelector(selectorFilter);
   const { items, status } = useSelector(selectPizzaData);
 
   const navigate = useNavigate();
@@ -54,7 +53,7 @@ const Home = () => {
         category,
         search,
         currentPage,
-      })
+      }),
     );
   };
 
@@ -76,15 +75,13 @@ const Home = () => {
     if (window.location.search) {
       const params = qs.parse(window.location.search.substring(1));
 
-      const sort = sortList.find(
-        (obj) => obj.sortProperty === params.sortProperty
-      );
+      const sort = sortList.find((obj) => obj.sortProperty === params.sortProperty);
 
       dispatch(
         setFilters({
           ...params,
           sort,
-        })
+        }),
       );
       isSearch.current = true;
       getPizzas();
@@ -101,7 +98,7 @@ const Home = () => {
 
   //    .filter((obj) => obj.title.toLowerCase().includes(searchValue.toLowerCase()))
 
-  const pizzas = items.map((pizza) => <PizzaBlock key={pizza.id} {...pizza} />);
+  const pizzas = items.map((pizza) => <PizzaBlock {...pizza} key={pizza.id} />);
   const skeletons = [...Array(8)].map((_, i) => <Skeleton key={i} />);
 
   return (
@@ -121,17 +118,10 @@ const Home = () => {
           </p>
         </div>
       ) : (
-        <div className="content__items">
-          {' '}
-          {status === 'loading' ? skeletons : pizzas}
-        </div>
+        <div className="content__items"> {status === 'loading' ? skeletons : pizzas}</div>
       )}
 
-      <ResponsivePagination
-        current={currentPage}
-        total={totalPages}
-        onPageChange={onChangePage}
-      />
+      <ResponsivePagination current={currentPage} total={totalPages} onPageChange={onChangePage} />
     </div>
   );
 };
