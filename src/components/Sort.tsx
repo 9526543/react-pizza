@@ -1,31 +1,36 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectorSort, setSort } from '../redux/slices/filterSlice';
+import { selectorSort, setSort, SortPropertyEnum } from '../redux/slices/filterSlice';
 
-export const sortList = [
-  { name: 'популярности (Убыв)', sortProperty: 'rating' },
-  { name: 'популярности (Возр)', sortProperty: '-rating' },
-  { name: 'цене (Убыв)', sortProperty: 'price' },
-  { name: 'цене (Возр)', sortProperty: '-price' },
-  { name: 'алфавиту (Убыв)', sortProperty: 'title' },
-  { name: 'алфавиту (Возр)', sortProperty: '-title' },
+type sortItem = {
+  name: string;
+  sortProperty: SortPropertyEnum;
+};
+
+export const sortList: sortItem[] = [
+  { name: 'популярности (Убыв)', sortProperty: SortPropertyEnum.RATING_DESC },
+  { name: 'популярности (Возр)', sortProperty: SortPropertyEnum.RATING_ASC },
+  { name: 'цене (Убыв)', sortProperty: SortPropertyEnum.PRICE_DESC },
+  { name: 'цене (Возр)', sortProperty: SortPropertyEnum.PRICE_ASC },
+  { name: 'алфавиту (Убыв)', sortProperty: SortPropertyEnum.TITLE_DESC },
+  { name: 'алфавиту (Возр)', sortProperty: SortPropertyEnum.TITLE_ASC },
 ];
 
-const Sort = () => {
+const SortPopup = () => {
   const dispatch = useDispatch();
   const sort = useSelector(selectorSort);
-  const sortRef = useRef();
+  const sortRef = useRef<HTMLDivElement>(null);
 
   const [open, setOpen] = useState(false);
 
-  const onClickListItem = (obj) => {
+  const onClickListItem = (obj: sortItem) => {
     dispatch(setSort(obj));
     setOpen(false);
   };
 
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (!event.composedPath().includes(sortRef.current)) {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (sortRef.current && !event.composedPath().includes(sortRef.current)) {
         setOpen(false);
       }
     };
@@ -42,8 +47,7 @@ const Sort = () => {
           height="6"
           viewBox="0 0 10 6"
           fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
+          xmlns="http://www.w3.org/2000/svg">
           <path
             d="M10 5C10 5.16927 9.93815 5.31576 9.81445 5.43945C9.69075 5.56315 9.54427 5.625 9.375 5.625H0.625C0.455729 5.625 0.309245 5.56315 0.185547 5.43945C0.061849 5.31576 0 5.16927 0 5C0 4.83073 0.061849 4.68424 0.185547 4.56055L4.56055 0.185547C4.68424 0.061849 4.83073 0 5 0C5.16927 0 5.31576 0.061849 5.43945 0.185547L9.81445 4.56055C9.93815 4.68424 10 4.83073 10 5Z"
             fill="#2C2C2C"
@@ -58,11 +62,8 @@ const Sort = () => {
             {sortList.map((obj, i) => (
               <li
                 key={i}
-                className={
-                  sort.sortProperty === obj.sortProperty ? 'active' : ''
-                }
-                onClick={() => onClickListItem(obj)}
-              >
+                className={sort.sortProperty === obj.sortProperty ? 'active' : ''}
+                onClick={() => onClickListItem(obj)}>
                 {obj.name}
               </li>
             ))}
@@ -73,4 +74,4 @@ const Sort = () => {
   );
 };
 
-export default Sort;
+export default SortPopup;

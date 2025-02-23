@@ -3,7 +3,7 @@ import React, { useEffect, useRef } from 'react';
 import qs from 'qs';
 import ResponsivePagination from 'react-responsive-pagination';
 import 'react-responsive-pagination/themes/classic.css';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
 
 import Categories from '../components/Categories';
@@ -13,31 +13,33 @@ import Skeleton from '../components/PizzaBlock/Skeleton';
 // import { SearchContext } from '../App';
 
 import {
+  FilterSliceState,
   selectorFilter,
   setCategoryId,
   setCurrentPage,
   setFilters,
 } from '../redux/slices/filterSlice';
 import { fetchPizzas, selectPizzaData } from '../redux/slices/pizzaSlice';
+import { useAppDispatch } from '../redux/store';
 
-const Home = () => {
+const Home: React.FC = () => {
   const { categoryId, sort, currentPage, searchValue } = useSelector(selectorFilter);
   const { items, status } = useSelector(selectPizzaData);
 
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   // const { searchValue } = useContext(SearchContext);
   const isSearch = useRef(false);
   const isMounted = useRef(false);
 
   const totalPages = 3;
 
-  const onChangeCategory = (id) => {
+  const onChangeCategory = (id: number) => {
     dispatch(setCategoryId(id));
   };
 
-  const onChangePage = (number) => {
-    dispatch(setCurrentPage(number));
+  const onChangePage = (page: number) => {
+    dispatch(setCurrentPage(page));
   };
 
   const getPizzas = async () => {
@@ -52,7 +54,7 @@ const Home = () => {
         order,
         category,
         search,
-        currentPage,
+        currentPage: String(currentPage),
       }),
     );
   };
@@ -61,7 +63,7 @@ const Home = () => {
   useEffect(() => {
     if (isMounted.current) {
       const queryString = qs.stringify({
-        sortProperty: sort.sortProperty,
+        sortBy: sort.sortProperty,
         categoryId,
         currentPage,
       });
@@ -74,14 +76,13 @@ const Home = () => {
   useEffect(() => {
     if (window.location.search) {
       const params = qs.parse(window.location.search.substring(1));
-
-      const sort = sortList.find((obj) => obj.sortProperty === params.sortProperty);
+      const sort = sortList.find((obj) => obj.sortProperty === params.sortBy);
 
       dispatch(
         setFilters({
           ...params,
           sort,
-        }),
+        } as FilterSliceState),
       );
       isSearch.current = true;
       getPizzas();
@@ -98,7 +99,7 @@ const Home = () => {
 
   //    .filter((obj) => obj.title.toLowerCase().includes(searchValue.toLowerCase()))
 
-  const pizzas = items.map((pizza) => <PizzaBlock {...pizza} key={pizza.id} />);
+  const pizzas = items.map((pizza: any) => <PizzaBlock {...pizza} key={pizza.id} />);
   const skeletons = [...Array(8)].map((_, i) => <Skeleton key={i} />);
 
   return (

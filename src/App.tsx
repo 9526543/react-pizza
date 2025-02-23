@@ -27,15 +27,10 @@ function App() {
 
 export default App;
 
-{
-  /* <SearchContext.Provider
+/* <SearchContext.Provider
     value={{
       searchValue,
       setSearchValue,
     }}
-  > */
-}
-
-{
-  /* </SearchContext.Provider> */
-}
+  > 
+</SearchContext.Provider> */

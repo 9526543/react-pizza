@@ -1,6 +1,22 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { RootState } from '../store';
 
-const initialState = {
+export type CartItem = {
+  id: string;
+  title: string;
+  price: number;
+  imageUrl: string;
+  type: string;
+  size: number;
+  count: number;
+};
+
+interface CartSliceState {
+  totalPrice: number;
+  items: CartItem[];
+}
+
+const initialState: CartSliceState = {
   totalPrice: 0,
   items: [],
 };
@@ -9,7 +25,7 @@ const cartSlice = createSlice({
   name: 'cart',
   initialState,
   reducers: {
-    addItem(state, action) {
+    addItem(state, action: PayloadAction<CartItem>) {
       const findItem = state.items.find(
         (obj) =>
           obj.id === action.payload.id &&
@@ -28,21 +44,21 @@ const cartSlice = createSlice({
         return obj.price * obj.count + sum;
       }, 0);
     },
-    minusItem(state, action) {
+    minusItem(state, action: PayloadAction<CartItem>) {
       const findItem = state.items.find(
         (obj) =>
           obj.id === action.payload.id &&
           obj.type === action.payload.type &&
           obj.size === action.payload.size,
       );
-      if (findItem.count > 1) {
+      if (findItem && findItem.count > 1) {
         findItem.count--;
       }
       state.totalPrice = state.items.reduce((sum, obj) => {
         return obj.price * obj.count + sum;
       }, 0);
     },
-    removeItem(state, action) {
+    removeItem(state, action: PayloadAction<CartItem>) {
       state.items = state.items.filter((obj) => {
         if (obj.id !== action.payload.id) {
           return true;
@@ -64,9 +80,9 @@ const cartSlice = createSlice({
   },
 });
 
-export const selectorCart = (state) => state.cart;
+export const selectorCart = (state: RootState) => state.cart;
 // export const selectCartItemById = (id) => (state) => state.cart.items.find((obj) => obj.id === id);
-export const selectCartItems = (id) => (state) =>
+export const selectCartItems = (id: string) => (state: RootState) =>
   state.cart.items
     .filter((item) => item.id === id)
     .reduce((sum, item) => {
