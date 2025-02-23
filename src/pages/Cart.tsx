@@ -87,7 +87,7 @@ const Cart = () => {
           </div>
         </div>
         <div className="content__items">
-          {items.map((item: any) => (
+          {items.map((item) => (
             <CartItem key={item.id + item.size + item.type} {...item} />
           ))}
         </div>
