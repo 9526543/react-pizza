@@ -1,10 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { selectorSort, setSort, SortPropertyEnum } from '../redux/slices/filterSlice';
+import { useDispatch } from 'react-redux';
+import { setSort, Sort, SortPropertyEnum } from '../redux/slices/filterSlice';
 
 type sortItem = {
   name: string;
   sortProperty: SortPropertyEnum;
+};
+
+type SortPopupProps = {
+  value: Sort;
 };
 
 export const sortList: sortItem[] = [
@@ -16,9 +20,9 @@ export const sortList: sortItem[] = [
   { name: 'алфавиту (Возр)', sortProperty: SortPropertyEnum.TITLE_ASC },
 ];
 
-const SortPopup = () => {
+const SortPopup: React.FC<SortPopupProps> = React.memo(({ value }) => {
   const dispatch = useDispatch();
-  const sort = useSelector(selectorSort);
+
   const sortRef = useRef<HTMLDivElement>(null);
 
   const [open, setOpen] = useState(false);
@@ -27,7 +31,7 @@ const SortPopup = () => {
     dispatch(setSort(obj));
     setOpen(false);
   };
-
+  console.log('Sort Render');
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (sortRef.current && !event.composedPath().includes(sortRef.current)) {
@@ -54,7 +58,7 @@ const SortPopup = () => {
           />
         </svg>
         <b>Сортировка по:</b>
-        <span onClick={() => setOpen((open) => !open)}>{sort.name}</span>
+        <span onClick={() => setOpen((open) => !open)}>{value.name}</span>
       </div>
       {open && (
         <div className="sort__popup">
@@ -62,7 +66,7 @@ const SortPopup = () => {
             {sortList.map((obj, i) => (
               <li
                 key={i}
-                className={sort.sortProperty === obj.sortProperty ? 'active' : ''}
+                className={value.sortProperty === obj.sortProperty ? 'active' : ''}
                 onClick={() => onClickListItem(obj)}>
                 {obj.name}
               </li>
@@ -72,6 +76,6 @@ const SortPopup = () => {
       )}
     </div>
   );
-};
+});
 
 export default SortPopup;
