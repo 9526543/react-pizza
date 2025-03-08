@@ -6,11 +6,13 @@ import 'react-responsive-pagination/themes/classic.css';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
 
-import Categories from '../components/Categories';
-import Sort, { sortList } from '../components/Sort';
-import PizzaBlock from '../components/PizzaBlock/PizzaBlock';
-import Skeleton from '../components/PizzaBlock/Skeleton';
+// import Categories from '../components/Categories';
+import { sortList } from '../components/Sort';
+// import PizzaBlock from '../components/PizzaBlock/PizzaBlock';
+// import Skeleton from '../components/PizzaBlock/Skeleton';
 // import { SearchContext } from '../App';
+
+import { Skeleton, PizzaBlock, Categories, Sort } from '../components';
 
 import {
   FilterSliceState,
